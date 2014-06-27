@@ -1,0 +1,8 @@
+# top page
+index =  mw_index.inc:mw_index index.tpl
+bj_start = game.inc:Blackjack bj.tpl
+hit = act.inc:Hit bj.tpl
+stand = act.inc:Stand bj.tpl
+poker_start = game.inc:Poker poker.tpl
+
+
