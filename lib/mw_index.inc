@@ -20,7 +20,7 @@ class mw_index extends base_model {
 	
 	unset($_SESSION['player']);
 	
-		//プレイヤー
+		//プレイヤーのインスタンスを作る
 		$player = new Player();
 		
 		
