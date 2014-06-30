@@ -14,13 +14,11 @@ require_once('base_model.inc');
 //ブラックジャック関するクラス
 class Blackjack extends base_model{
 
-	private $parent_card = array();
-
 	//ブラックジャック開始時の処理
 	public function execute() {
 	
 		//ゲームをリロードしようとしたらエラー
-		if($_SESSION['parent'] != null){
+		if($_SESSION['parent'] == null){
 			//エラーページに飛ぶ
 		}
 		
@@ -37,19 +35,11 @@ class Blackjack extends base_model{
 		shuffle($now_use_tramp);
 		
 		//カードを親とプレイヤーに配る
-		for($i =0;$i <4;$i++){
-			//親のカード
-			if($i%2 == 0){
-				$parent->add_player_card($now_use_tramp[$i]); 
-			//プレイヤーのカード	
-			}else{
-				$player->add_player_card($now_use_tramp[$i]); 
-			}
-			//使われたカードはヤマから抜く
-			unset($now_use_tramp[$i]);
-		}
+		$card->deal_tramp($now_use_tramp,2,$parent,$player);
 		
-		$player->count_card_sum($player->get_player_card());
+		//プレイヤーと親のカードを計算
+		$parent->count_card_sum();
+		$player->count_card_sum();
 		
 		//セッションに情報を格納
 		$_SESSION['now_use_card'] = $now_use_tramp;
@@ -72,6 +62,7 @@ class Poker extends base_model{
 	}
 }
 
+//カードクラス
 class Card{
 	
 	/**
@@ -84,10 +75,25 @@ class Card{
 							"C:1","C:2","C:3","C:4","C:5","C:6","C:7","C:8","C:9","C:10","C:11","C:12","C:13",
 							);
 							
-	//コンストラクタ
-	function __construct(){
-	}
+	/**
+	*トランプを配る二人用（一人に対して配る枚数,プレイヤー1、プレイヤー2）
+	
+	public function deal_tramp($now_use_tramp,$deal_tramp_count,$player1,$player2){
+		for($i =0;$i <($deal_tramp_count*2);$i++){
+			//親のカード
+			if($i%2 == 0){
+				$player1->add_player_card($now_use_tramp[$i]); 
+			//プレイヤーのカード	
+			}else{
+				$player2->add_player_card($now_use_tramp[$i]); 
+			}
+			//使われたカードはヤマから抜く
+			unset($now_use_tramp[$i]);
+		}
 
+	}
+	*/
+	
 	//アクセサ
 	public function get_All_tramp(){
 		return $this->All_tramp;
@@ -95,25 +101,26 @@ class Card{
 		
 }
 
+//プレイヤークラス
 class Player{
 
 	private $player_card = array();
 	private $player_money = 1000;
 	private $player_sum_card = 0;
 	
-	//リストにカードを追加し、カードの合計値を計算
+	//プレイヤーの手札にカードを追加
 	public function add_player_card($c){
 		array_push($this->player_card,$c);
 	}
 	
 	//プレイヤーの現在のカードの合計を計算
-	public function count_card_sum($player_card){
+	public function count_card_sum(){
 	
 		//
 		$only_card_number_arr = array();
 		
 		//数字だけの配列に変換
-		foreach($player_card as $val){
+		foreach($this->player_card as $val){
 			$pieces = explode(":",$val);
 			array_push($only_card_number_arr,$pieces[1]);
 		}
@@ -122,13 +129,15 @@ class Player{
 		$sum = 0;
 		//まずは降順に並び替え
 		arsort($only_card_number_arr);
-		
+		var_dump($only_card_number_arr);
 		//まわす
 		foreach($only_card_number_arr as $key => $val){
+//		var_dump($val);
 			
 			//1(エース)が出るまではカードのスコアにより加点、1が出た場合は$sumの値により1か11でカウントするかを決定
 			if($val >= 10){
 				$sum += 10;
+				
 			}else if($val == 1){
 			
 				if($key != (count($only_card_number_arr)-1)){
@@ -148,6 +157,20 @@ class Player{
 		var_dump($sum);
 		return $sum;
 
+	}
+	
+	//ヒット（カードをもち札に追加)
+	public function hit($use_now_card){
+		$player->add_player_card($use_now_card);
+	}
+	
+	//親の行動
+	public function parent_act($now_use_card,$parent){
+	
+		//親のカードが15以下だった場合、親はドロー(条件は(仮))
+		if($parent->count_card_sum() =< 15){
+			$parent
+		}
 	}
 	
 	protected function set_player_card($o) { $this->player_card= $o; }
