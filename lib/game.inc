@@ -77,7 +77,7 @@ class Card{
 							
 	/**
 	*トランプを配る二人用（一人に対して配る枚数,プレイヤー1、プレイヤー2）
-	
+	*/
 	public function deal_tramp($now_use_tramp,$deal_tramp_count,$player1,$player2){
 		for($i =0;$i <($deal_tramp_count*2);$i++){
 			//親のカード
@@ -92,7 +92,6 @@ class Card{
 		}
 
 	}
-	*/
 	
 	//アクセサ
 	public function get_All_tramp(){
