@@ -16,26 +16,30 @@ class Blackjack extends base_model{
 
 	//ブラックジャック開始時の処理
 	public function execute() {
-	
-		//ゲームをリロードしようとしたらエラー
-		if($_SESSION['parent'] == null){
-			//エラーページに飛ぶ
-		}
 		
+		//ゲームをリロードしようとしたらエラー
+		if(@$_SESSION['parent'] != null){
+		
+			//セッションを消して
+			unset($_SESSION['parent']);
+			//エラーページに飛ぶ
+			header("Location: http://localhost/PHPBJ/wwwroot/error.html");
+		}
+				
+		//smartyを使うためのインスタンスを作る
+		$smarty = $this->get_conv();
 		//親のインスタンスを作る
 		$parent = new Player();
 		//プレイヤーのインスタンスを持ってくる
 		$player = unserialize($_SESSION['player']);
 		//参加者たちの配列
-		//$players_arr = array($parent,$player)
+		//$players_arr = array($parent,$player);
 		
-				
 		//継続してゲームの場合、プレイヤーのカードを初期化
 		if($player->get_player_card() != null){
 			$player->set_player_card(array());
 		}
-
-	
+			
 		//ゲームを始めるにあたってトランプを作る
 		$card = new Card();
 		$now_use_tramp = $card->get_All_tramp();
@@ -51,12 +55,13 @@ class Blackjack extends base_model{
 		$_SESSION['parent'] = serialize($parent);
 		$_SESSION['player'] = serialize($player);
 		
-		 //表示側に渡す
-		$smarty = $this->get_conv();
+		//表示側に渡す
+		//渡す前に親のカードを隠す分は隠す
 		$smarty->set('game_name', 'BlackJack');
 		$smarty->set('player_card', $player->get_player_card());
 		$smarty->set('parent_card', $parent->get_player_card());
-		
+		$smarty->set('act_flg_ok', @$_SESSION['parent']);
+				
 	}
 }
 
@@ -76,10 +81,10 @@ class Card{
 	* 全てのトランプ
 	*/
 	private $All_tramp = array(
-							"H:1","H:2","H:3","H:4","H:5","H:6","H:7","H:8","H:9","H:10","H:11","H:12","H:13",
-							"D:1","D:2","D:3","D:4","D:5","D:6","D:7","D:8","D:9","D:10","D:11","D:12","D:13",
-							"S:1","S:2","S:3","S:4","S:5","S:6","S:7","S:8","S:9","S:10","S:11","S:12","S:13",
-							"C:1","C:2","C:3","C:4","C:5","C:6","C:7","C:8","C:9","C:10","C:11","C:12","C:13",
+							"ハート:1","ハート:2","ハート:3","ハート:4","ハート:5","ハート:6","ハート:7","ハート:8","ハート:9","ハート:10","ハート:11","ハート:12","ハート:13",
+							"ダイヤ:1","ダイヤ:2","ダイヤ:3","ダイヤ:4","ダイヤ:5","ダイヤ:6","ダイヤ:7","ダイヤ:8","ダイヤ:9","ダイヤ:10","ダイヤ:11","ダイヤ:12","ダイヤ:13",			
+							"スペード:1","スペード:2","スペード:3","スペード:4","スペード:5","スペード:6","スペード:7","スペード:8","スペード:9","スペード:10","スペード:11","スペード:12","スペード:13",
+							"クローバー:1","クローバー:2","クローバー:3","クローバー:4","クローバー:5","クローバー:6","クローバー:7","クローバー:8","クローバー:9","クローバー:10","クローバー:11","クローバー:12","クローバー:13",
 							);
 							
 	/**
@@ -116,11 +121,11 @@ class Player{
 	public function hit($now_use_tramp){
 		//手札に追加
 		array_push($this->player_card,reset($now_use_tramp));
-		//削除
+		//ヤマにある札から配ったものを減らす
 		array_shift($now_use_tramp);
 		//現在のカードの合計を再計算し、セット
 		$this->count_card_sum();
-		
+		//
 		return $now_use_tramp;
 	}
 	
@@ -164,7 +169,7 @@ class Player{
 			}
 		}
 		
-		//合計
+		//合計値を返す
 		$this->player_sum_card = $sum;
 	}
 		
@@ -176,13 +181,17 @@ class Player{
 			$this->player_state = "stand";
 		}else{
 			$now_use_tramp = $this->hit($now_use_tramp);
+			if($this->player_sum_card > 15){
+				$this->player_state = "stand";
+			}
 		}
 		
 		return $now_use_tramp;
 	}
 	
 	//アクセサ
-	public function set_player_card($o) { $this->player_card= $o; }
+	public function set_player_card_key_value($key,$value){$this->player_card[$key] = $value;}
+	public function set_player_card($array){$this->player_card = $array;}
 	public function get_player_card() { return $this->player_card; }
 	
 	protected function set_player_sum_card($o) { $this->player_sum_card= $o; }

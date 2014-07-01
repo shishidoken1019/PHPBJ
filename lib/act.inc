@@ -15,9 +15,16 @@ require_once('game.inc');
 //ブラックジャックでヒットした場合
 class Hit extends base_model {
 
-	
-
 	public function execute(){
+		
+		//ゲームをリロードしようとしたらエラー
+		if(@$_SESSION['parent'] == null){
+		
+			//セッションを消して
+			unset($_SESSION['parent']);
+			//エラーページに飛ぶ
+			header("Location: http://localhost/PHPBJ/wwwroot/error.html");
+		}
 		
 		//セッションから情報を取得
 		$player = unserialize($_SESSION['player']);
@@ -51,7 +58,14 @@ class Hit extends base_model {
 			$smarty->set('result',$result);
 			$smarty->set('player_sum_card', $player->get_player_sum_card());
 			$smarty->set('parent_sum_card', $parent->get_player_sum_card());
+			$smarty->set("open", "open");
+			
+			//セッションを初期化
+			unset($_SESSION['parent']); 
 		}
+		
+		//行動を表示するかどうかのフラグを渡す
+		$smarty->set('act_flg_ok', @$_SESSION['parent']);
 	}
 
 }
@@ -60,6 +74,16 @@ class Hit extends base_model {
 class Stand extends base_model {
 
 	public function execute(){
+	
+		//ゲームをリロードしようとしたらエラー
+		if(@$_SESSION['parent'] == null){
+		
+			//セッションを消して
+			unset($_SESSION['parent']);
+			//エラーページに飛ぶ
+			header("Location: http://localhost/PHPBJ/wwwroot/error.html");
+		}
+
 	
 		//セッションから情報を取得
 		$player = unserialize($_SESSION['player']);
@@ -89,23 +113,26 @@ class Stand extends base_model {
 			//インスタンスを作る
 			$utility = new Utility();
 			$result = $utility->result_out($player,$parent);
-			
+				
 			//表示側に渡す
 			$smarty->set('result',$result);
 			$smarty->set('player_sum_card', $player->get_player_sum_card());
 			$smarty->set('parent_sum_card', $parent->get_player_sum_card());
-
+			$smarty->set("open", "open");
+				
+			//セッションを初期化
+			unset($_SESSION['parent']); 
 		}
 		
-		
-		
+		//行動を表示するかどうかのフラグを渡す
+		$smarty->set('act_flg_ok', @$_SESSION['parent']);
 	}
 
 }
 
 class Utility{
 	
-	//ブラックジャックで結果を出す共通処理
+	//ブラックジャックで結果を出す処理
 	public function result_out($player,$parent){
 			
 			//結果
@@ -127,6 +154,7 @@ class Utility{
 		return $result;
 
 	}
+	
 }
 
 
