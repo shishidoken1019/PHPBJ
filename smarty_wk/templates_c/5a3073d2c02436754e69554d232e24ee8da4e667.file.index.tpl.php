@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.18, created on 2014-06-27 15:37:50
+<?php /* Smarty version Smarty-3.1.18, created on 2014-07-01 10:26:30
          compiled from "C:\Program Files\Apache Software Foundation\Apache2.2\htdocs\PHPBJ\template\index.tpl" */ ?>
 <?php /*%%SmartyHeaderCode:469453ad110aa464b4-11670995%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '5a3073d2c02436754e69554d232e24ee8da4e667' => 
     array (
       0 => 'C:\\Program Files\\Apache Software Foundation\\Apache2.2\\htdocs\\PHPBJ\\template\\index.tpl',
-      1 => 1403851069,
+      1 => 1404177982,
       2 => 'file',
     ),
   ),
@@ -19,7 +19,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   'unifunc' => 'content_53ad110aaa0246_44295916',
   'variables' => 
   array (
-    'message' => 0,
+    'error' => 0,
   ),
   'has_nocache_code' => false,
 ),false); /*/%%SmartyHeaderCode%%*/?>
@@ -30,7 +30,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
 <title>MagicWeapon HelloWorld.</title>
 </head>
 <body>
-<?php echo $_smarty_tpl->tpl_vars['message']->value;?>
+<?php echo $_smarty_tpl->tpl_vars['error']->value;?>
 
 
 <p><a href="./index.php?c=bj_start">ブラックジャックを開始</a></p>
