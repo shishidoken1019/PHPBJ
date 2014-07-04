@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.18, created on 2014-07-03 18:01:10
+<?php /* Smarty version Smarty-3.1.18, created on 2014-07-04 14:49:29
          compiled from "C:\Program Files\Apache Software Foundation\Apache2.2\htdocs\PHPBJ\template\bj.tpl" */ ?>
 <?php /*%%SmartyHeaderCode:1076053acf7eeb7c3a0-49300204%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     '5f7004b2f1417aa68baadcbfde7770699533556a' => 
     array (
       0 => 'C:\\Program Files\\Apache Software Foundation\\Apache2.2\\htdocs\\PHPBJ\\template\\bj.tpl',
-      1 => 1404378066,
+      1 => 1404451869,
       2 => 'file',
     ),
   ),
@@ -66,25 +66,25 @@ $_smarty_tpl->tpl_vars['var']->_loop = true;
 
 <h2>自分の手札</h2>
 <ul>
-<?php  $_smarty_tpl->tpl_vars['var'] = new Smarty_Variable; $_smarty_tpl->tpl_vars['var']->_loop = false;
+	<?php  $_smarty_tpl->tpl_vars['var'] = new Smarty_Variable; $_smarty_tpl->tpl_vars['var']->_loop = false;
  $_from = $_smarty_tpl->tpl_vars['player_card']->value; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array');}
 foreach ($_from as $_smarty_tpl->tpl_vars['var']->key => $_smarty_tpl->tpl_vars['var']->value) {
 $_smarty_tpl->tpl_vars['var']->_loop = true;
 ?>
-<li><?php echo $_smarty_tpl->tpl_vars['var']->value;?>
+		<li><?php echo $_smarty_tpl->tpl_vars['var']->value;?>
 </li>
-<?php } ?>
+	<?php } ?>
 </ul>
 <?php if ($_smarty_tpl->tpl_vars['act_flg_ok']->value!=null) {?>
-<ul>
-<li><a href="./index.php?c=hit">ヒット</a></li>
-<li><a href="./index.php?c=stand">スタンド</a></li>
-</ul>
+	<ul>
+		<li><a href="./index.php?c=hit">ヒット</a></li>
+		<li><a href="./index.php?c=stand">スタンド</a></li>
+	</ul>
 <?php }?>
 
 <?php if ($_smarty_tpl->tpl_vars['result']->value!=null) {?>
-	<p><font color="red"><?php echo $_smarty_tpl->tpl_vars['result']->value;?>
-</font></p>
+	<h4><font color="red"><?php echo $_smarty_tpl->tpl_vars['result']->value;?>
+</font></h4>
 	<p>あなたのカードの合計 : <?php echo $_smarty_tpl->tpl_vars['player_sum_card']->value;?>
 </p>
 	<p>親のカードの合計 : <?php echo $_smarty_tpl->tpl_vars['parent_sum_card']->value;?>

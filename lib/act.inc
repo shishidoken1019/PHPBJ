@@ -11,17 +11,21 @@
 
 require_once('base_model.inc');
 require_once('game.inc');
+include("header.inc");
 
 //ブラックジャックでヒットした場合
 class Hit extends base_model {
 
 	public function execute(){
 		
+		////初期処理
+		include("header.inc");
+		//インスタンスを作る
+		$card = new card();
+		$smarty = $this->get_conv();
+		
 		//ゲームをリロードしようとしたらエラー
 		if(@$_SESSION['parent'] == null){
-		
-			//セッションを消して
-			unset($_SESSION['parent']);
 			//エラーページに飛ぶ
 			header("Location: http://localhost/PHPBJ/wwwroot/error.html");
 		}
@@ -41,31 +45,25 @@ class Hit extends base_model {
 		$_SESSION['now_use_tramp'] = $now_use_tramp;
 		$_SESSION['parent'] = serialize($parent);
 		$_SESSION['player'] = serialize($player);
-		
-		//表示側に渡す
-		$smarty = $this->get_conv();
-		$smarty->set('game_name', 'BlackJack');
-		$smarty->set('player_card', $player->get_player_card());
-		$smarty->set('parent_card', $parent->get_player_card());
-		
+				
 		//もしプレイヤーのカードが21を超えていたら勝負
 		if($player->get_player_sum_card() > 21){
-			//
-			$utility = new Utility();
-			$result = $utility->result_out($player,$parent);
+
+			$result = $utility->result($player,$parent);
 			
 			//表示側に渡す
 			$smarty->set('result',$result);
+			$smarty->set("open", "open");
 			$smarty->set('player_sum_card', $player->get_player_sum_card());
 			$smarty->set('parent_sum_card', $parent->get_player_sum_card());
-			$smarty->set("open", "open");
 			
 			//セッションを初期化
 			unset($_SESSION['parent']); 
 		}
+
+		//表示側に毎回渡すものを渡す
+		$utility->common_display($player,$parent,$smarty);
 		
-		//行動を表示するかどうかのフラグを渡す
-		$smarty->set('act_flg_ok', @$_SESSION['parent']);
 	}
 
 }
@@ -74,16 +72,19 @@ class Hit extends base_model {
 class Stand extends base_model {
 
 	public function execute(){
-	
+		
+		
 		//ゲームをリロードしようとしたらエラー
 		if(@$_SESSION['parent'] == null){
-		
-			//セッションを消して
-			unset($_SESSION['parent']);
 			//エラーページに飛ぶ
 			header("Location: http://localhost/PHPBJ/wwwroot/error.html");
 		}
-
+		
+		////初期処理
+		include("header.inc");
+		//インスタンスを作る
+		$card = new card();
+		$smarty = $this->get_conv();
 	
 		//セッションから情報を取得
 		$player = unserialize($_SESSION['player']);
@@ -101,60 +102,27 @@ class Stand extends base_model {
 		$_SESSION['parent'] = serialize($parent);
 		$_SESSION['player'] = serialize($player);
 		
-		//表示側に渡す
-		$smarty = $this->get_conv();
-		$smarty->set('game_name', 'BlackJack');
-		$smarty->set('player_card', $player->get_player_card());
-		$smarty->set('parent_card', $parent->get_player_card());
-		
 		//もし親もスタンドの状態であれば勝負
 		if($parent->get_player_state() == "stand"){
 		
-			//インスタンスを作る
-			$utility = new Utility();
-			$result = $utility->result_out($player,$parent);
+			//勝負の結果を持ってくる
+			$result = $utility->result($player,$parent);
 				
 			//表示側に渡す
 			$smarty->set('result',$result);
+			$smarty->set("open", "open");
 			$smarty->set('player_sum_card', $player->get_player_sum_card());
 			$smarty->set('parent_sum_card', $parent->get_player_sum_card());
-			$smarty->set("open", "open");
 				
 			//セッションを初期化
 			unset($_SESSION['parent']); 
 		}
 		
-		//行動を表示するかどうかのフラグを渡す
-		$smarty->set('act_flg_ok', @$_SESSION['parent']);
+		//表示側に毎回渡すものを渡す
+		$utility->common_display($player,$parent,$smarty);
 	}
 
 }
 
-class Utility{
-	
-	//ブラックジャックで結果を出す処理
-	public function result_out($player,$parent){
-			
-			//結果
-			//引き分け条件
-			if($player->get_player_sum_card() == $parent->get_player_sum_card() || ($parent->get_player_sum_card() > 21&&$player->get_player_sum_card() > 21)){
-				$result="引き分け";
-			}
-			//プレイヤー勝利条件
-			else if(($parent->get_player_sum_card() > 21)
-			|| ($player->get_player_sum_card() > $parent->get_player_sum_card() && $player->get_player_sum_card() <= 21)){
-				$result="あなたの勝ち";
-			}
-			//プレイヤー負け条件
-			else if(($player->get_player_sum_card() > 21)
-			|| ($player->get_player_sum_card() < $parent->get_player_sum_card() && $parent->get_player_sum_card() <= 21)){
-				$result="あなたの負け";
-			}
-			
-		return $result;
-
-	}
-	
-}
 
 

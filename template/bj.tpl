@@ -23,19 +23,19 @@
 
 <h2>自分の手札</h2>
 <ul>
-{foreach from=$player_card item=var}
-<li>{$var}</li>
-{/foreach}
+	{foreach from=$player_card item=var}
+		<li>{$var}</li>
+	{/foreach}
 </ul>
 {if $act_flg_ok != null}
-<ul>
-<li><a href="./index.php?c=hit">ヒット</a></li>
-<li><a href="./index.php?c=stand">スタンド</a></li>
-</ul>
+	<ul>
+		<li><a href="./index.php?c=hit">ヒット</a></li>
+		<li><a href="./index.php?c=stand">スタンド</a></li>
+	</ul>
 {/if}
 
 {if $result != null}
-	<p><font color="red">{$result}</font></p>
+	<h4><font color="red">{$result}</font></h4>
 	<p>あなたのカードの合計 : {$player_sum_card}</p>
 	<p>親のカードの合計 : {$parent_sum_card}</p>
 	<p><a href=./index.php?c=bj_start>継続してポーカーを遊ぶ</a></p>

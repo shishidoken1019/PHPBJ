@@ -30,4 +30,3 @@ require_once('controller.inc');
 $co = new controller;
 $co->set_base_path($bp);
 
-session_start();
